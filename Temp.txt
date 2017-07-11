@@ -1,0 +1,119 @@
+int main()
+{
+    setlocale(LC_ALL, "");
+    int k =1;
+    string s;
+    std::vector<string> coord;
+    char *tmp;
+    std::ifstream file("test.txt");
+    string line;
+
+  if (file.is_open())
+  {
+    while ( file.good() )
+    {
+      getline (file,line);
+      coord.push_back(line);
+    }
+    file.close();
+  }
+  else cout << "Unable to open file";
+  char*str = coord[0];
+    char* pch = strtok (str," ");
+    while (pch != NULL)
+    {
+      std::cout << pch  << "n";
+      pch = strtok (NULL, " ");
+    }
+
+
+    return 0;
+
+}
+
+#include "main.h"
+Map::Map(int n, int m ){
+    int i,j;
+    x_max=m;
+    y_max=n;
+    p = (int*) malloc(n*m*sizeof(int));
+    for(i=0;i<n;i++){
+        for(j=0;j<m;j++)
+        *(p+i*m+j)=0;
+    }
+}
+
+void Map::show(){
+    int i,j;
+    for(i=0;i<y_max;i++){
+        for(j=0;j<x_max;j++){
+            printf("%d", *(p+i*x_max+j));
+        }
+        printf("\n");
+    }
+}
+
+void Map::save(char *fname){
+    FILE *fp;
+    fp=fopen(fname, "w");
+    if(fp==NULL){
+        printf("Cant open file");
+        exit(1);
+    }
+    int i,j;
+    fprintf(fp,"P1\n");
+    fprintf(fp,"%d %d\n",(y_max),(x_max) );
+    for(i=0;i<y_max;i++){
+        for(j=0;j<x_max;j++){
+            fprintf(fp, "%d", *(p+i*x_max+j));
+    }
+    fprintf(fp,"\n");
+    }
+    fclose(fp);
+}
+
+void Map::drawPoint(int x,int y, int color){
+    printf("%d", y_max);
+   *(p+(y_max-1-y)*x_max+x)=color;
+}
+
+void Map::assosiate(float t_lat1, float t_longt1, float t_lat2, float t_longt2){
+    lat1 = t_lat1;
+    lat2 = t_lat2;
+    longt1 = t_longt1;
+    longt2 = t_longt2;
+}
+
+float Map::return_coord(int t){
+    switch (t){
+    case 1:
+        return lat1;
+        break;
+    case 2:
+        return longt1;
+        break;
+    case 3:
+        return lat2;
+        break;
+    case 4:
+        return longt2;
+        break;
+    }
+}
+
+void Map::setK(Position p1, Position p4){
+    //printf("%f\n%f\n%d\n",p1.getLatitude(),p4.getLatitude(),y_max );
+    //printf("%f\n", (p1.getLatitude()-p4.getLatitude())/(y_max));
+    Klat = (p1.getLatitude()-p4.getLatitude())/y_max;
+    Klong = (p4.getLongtitude()-p1.getLongtitude())/x_max;
+}
+
+float Map::getK(int t){
+    if (t=1)
+        return Klong;
+    else
+        return Klat;
+}
+
+
+55,8135722 37,5015052 55,8135722 37,5025300 55,8133090 37,5015052 55,8133090 37,5025300 
